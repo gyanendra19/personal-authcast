@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "jsrsasign": "^11.1.0",
+    "@types/node": "^22.7.7"
+  },
+  "devDependencies": {
+    "@types/jsrsasign": "^10.5.14",
+    "@types/node": "^22.7.7"
+  }
+}
