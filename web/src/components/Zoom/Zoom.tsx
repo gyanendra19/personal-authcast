@@ -4,7 +4,7 @@ import { FC } from "react";
 import VideoContainer from "../VideoContainers/VideoContainer";
 import ScreenShareComponent from "../ShareScreen/ScreenShareComponent";
 import ControlButtons from "../ControlButtons/ControlButtons";
-import { useZoomLogic } from "../ZoomLogics/ZoomLogic";
+import { useZoomHandler } from "../ZoomEventHandler/ZoomEventHandler";
 
 
 interface ZoomProps {
@@ -21,7 +21,7 @@ interface ZoomMediaStream extends MediaStream {
 }
 
 const Zoom: FC<ZoomProps> = ({ session_key, tpc, password, role, userName }) => {
-  const stream:ZoomMediaStream = useZoomLogic(session_key, tpc, password, role, userName) as ZoomMediaStream ;
+  const stream:ZoomMediaStream = useZoomHandler(session_key, tpc, password, role, userName) as ZoomMediaStream ;
 
   const handleMute = () => {
     stream!.muteAudio();

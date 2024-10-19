@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-export const useZoomLogic = (
+export const useZoomHandler = (
   session_key: string,
   tpc: string,
   password: string,
