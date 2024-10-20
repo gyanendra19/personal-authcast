@@ -27,9 +27,7 @@ class Database {
       ssl: {
         rejectUnauthorized: false, // for dev only, remove it in prod
       },
-    });
-    console.log("pool---", this.pool);
-    
+    });    
   }
 
   async runQuery(
@@ -41,13 +39,11 @@ class Database {
     if (!query || !values) {
       throw new Error(`Invalid query or values: ${query}, ${values}`);
     }
-    console.log('hereeeeeeeeeeeeeeeeee----e-e-e-e');
     
     const client: PoolClient = await this.pool.connect();
     if (!client) {
       throw new Error("Error connecting to the database");
     }
-    console.log("connectt---- huaaa", client);
     
     try {
       const result: QueryResult<any> = await client.query(query, values);
@@ -66,9 +62,7 @@ class Database {
     
   }
 
-  async checkAndInsertInterviewId(interview_id: string) {
-    console.log("here i am ", interview_id);
-    
+  async checkAndInsertInterviewId(interview_id: string) {    
     const checkQuery = 'SELECT * FROM interview WHERE interview_id = $1';
     const checkResult = await this.runQuery(checkQuery, [interview_id], 'checkAndInsertInterviewId');
 
