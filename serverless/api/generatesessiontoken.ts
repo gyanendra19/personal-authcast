@@ -1,4 +1,4 @@
-import {KJUR} from "jsrsasign";
+import { KJUR } from "jsrsasign";
 
 export async function POST(request: Request) {
   const iat = Math.round(new Date().getTime() / 1000) - 30;
@@ -9,9 +9,6 @@ export async function POST(request: Request) {
     typ: "JWT",
   };
   const body = await request.json();
-  console.log("my body", body);
-  console.log("my env", process.env.NEXT_PUBLIC_ZOOM_KEY);
-
   try {
     const payload = {
       app_key: process.env.ZOOM_KEY,
@@ -24,11 +21,6 @@ export async function POST(request: Request) {
       exp: exp,
     };
 
-    console.log("kjur",KJUR);
-    
-
-    console.log("payload", payload);
-
     const sHeader = JSON.stringify(header);
     const sPayload = JSON.stringify(payload);
     const sessionToken = KJUR.jws.JWS.sign(
@@ -38,9 +30,7 @@ export async function POST(request: Request) {
       process.env.ZOOM_SECRET
     );
 
-    console.log("session token", sessionToken);
-
-    return new Response(sessionToken);
+    return Response.json({ sessionToken });
   } catch (error) {
     console.log(error);
     throw new Error("Something went wrong");
