@@ -24,6 +24,9 @@ export async function POST(request: Request) {
       exp: exp,
     };
 
+    console.log("kjur",KJUR);
+    
+
     console.log("payload", payload);
 
     const sHeader = JSON.stringify(header);
