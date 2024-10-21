@@ -1,6 +1,6 @@
 import KJUR from "jsrsasign";
 
-export async function GET(request: Request) {
+export async function POST(request: Request) {
     const iat = Math.round(new Date().getTime() / 1000) - 30;
   const exp = iat + 60 * 60 * 2;
 
