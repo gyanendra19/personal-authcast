@@ -12,7 +12,6 @@ export async function POST(request: Request) {
   try {
     const payload = {
       app_key: process.env.ZOOM_KEY,
-      password: body.password,
       tpc: body.tpc,
       role_type: 1,
       session_key: body.session_key,
@@ -30,7 +29,7 @@ export async function POST(request: Request) {
       process.env.ZOOM_SECRET
     );
 
-    return Response.json({ sessionToken });
+    return new Response(sessionToken);
   } catch (error) {
     console.log(error);
     throw new Error("Something went wrong");
