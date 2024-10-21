@@ -9,6 +9,9 @@ export async function POST(request: Request) {
     typ: "JWT",
   };
   const body = await request.json();
+  console.log("my body", body);
+  console.log("my env", process.env.NEXT_PUBLIC_ZOOM_KEY);
+  
 
   try {
     const payload = {
