@@ -1,4 +1,4 @@
-import KJUR from "jsrsasign";
+import {KJUR} from "jsrsasign";
 
 export async function POST(request: Request) {
   const iat = Math.round(new Date().getTime() / 1000) - 30;
@@ -28,7 +28,7 @@ export async function POST(request: Request) {
 
     const sHeader = JSON.stringify(header);
     const sPayload = JSON.stringify(payload);
-    const sessionToken = KJUR.KJUR.jws.JWS.sign(
+    const sessionToken = KJUR.jws.JWS.sign(
       "HS256",
       sHeader,
       sPayload,
