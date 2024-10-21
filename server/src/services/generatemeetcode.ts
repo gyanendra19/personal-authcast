@@ -1,6 +1,6 @@
 export function generateMeetCode(): string {
   const characters =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    "abcdefghijklmnopqrstuvwxyz";
   let meetCode = "";
 
   for (let i = 0; i < 6; i++) {
