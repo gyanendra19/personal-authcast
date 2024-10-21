@@ -14,7 +14,7 @@ export async function POST(request: Request) {
 
   try {
     const payload = {
-      app_key: process.env.NEXT_PUBLIC_ZOOM_KEY,
+      app_key: process.env.ZOOM_KEY,
       password: body.password,
       tpc: body.tpc,
       role_type: 1,
@@ -35,7 +35,7 @@ export async function POST(request: Request) {
       "HS256",
       sHeader,
       sPayload,
-      process.env.NEXT_PUBLIC_ZOOM_SECRET
+      process.env.ZOOM_SECRET
     );
 
     console.log("session token", sessionToken);
