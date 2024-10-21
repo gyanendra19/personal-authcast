@@ -1,5 +1,4 @@
 {
-  "type": "module",
   "dependencies": {
     "jsrsasign": "^11.1.0",
     "@types/node": "^22.7.7"
