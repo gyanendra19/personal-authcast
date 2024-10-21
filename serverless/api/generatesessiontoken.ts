@@ -39,7 +39,11 @@ export async function POST(request: Request) {
 
     return new Response(sessionToken);
   } catch (error) {
-    throw new Error("Something went wrong");
     console.log(error);
+    throw new Error("Something went wrong");
   }
 }
+
+export const config = {
+  runtime: 'nodejs',
+};
