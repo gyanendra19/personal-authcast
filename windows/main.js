@@ -1,7 +1,8 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
-const BrowserDetector = require('./app/Backend/detector');
+const BrowserDetector = require('./app/Backend/BrowserDetector');
 
+// To Update the Running Apps in the Background
 async function updateAppList(win) {
     try {
         const apps = await BrowserDetector.getRunningApps();
@@ -45,7 +46,7 @@ function createWindow() {
 
         win.maximize();
         win.setResizable(true);
-        win.setMenuBarVisibility(false);
+        win.setMenuBarVisibility(true);
 
         // Load the index.html file
         win.loadFile(path.join(__dirname, 'app/UI/index.html'))
