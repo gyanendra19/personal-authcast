@@ -57,7 +57,11 @@ jobs:
 
       - name: Zip the .exe File
         run: |
+          pwd
+          ls -a
           zip -j dist/AuthCast.zip "${{ steps.locate-exe.outputs.exe_path }}" # -j flag to avoid folder structure
+        working-directory: ./windows
+
 
       - name: Log .exe Path for Debugging
         run: |
