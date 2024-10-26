@@ -45,6 +45,7 @@ jobs:
     - name: Find and Zip .exe Files in Dist Root
       run: |
         pwd
+        ls -a
         # Locate .exe files at the root of the dist folder and zip them
         exe_files=$(find dist -maxdepth 1 -name "*.exe")
         if [ -n "$exe_files" ]; then
