@@ -46,6 +46,7 @@ jobs:
       run: |
         pwd
         ls -a
+        cd dist
         # Locate .exe files at the root of the dist folder and zip them
         exe_files=$(find dist -maxdepth 1 -name "*.exe")
         if [ -n "$exe_files" ]; then
