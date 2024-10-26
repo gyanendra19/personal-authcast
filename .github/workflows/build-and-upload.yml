@@ -3,48 +3,48 @@ name: Build and Upload Electron App
 on:
   push:
     paths:
-      - 'windows/**'  # Only trigger if there are changes in the windows folder
+      - "windows/**" # Only trigger if there are changes in the windows folder
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    
+
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+      # Log current directory after checkout
+      - name: Log Current Directory After Checkout
+        run: pwd
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: '16'
-    
-    # Log current directory after checkout
-    - name: Log Current Directory After Checkout
-      run: pwd
+      - name: List Files in Root
+        run: ls -la
 
-    - name: List Files in Root
-      run: ls -la
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-    - name: Install dependencies
-      run: npm install
-      working-directory: ./windows  # Run npm install in the windows folder
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "16"
 
-    - name: Build Electron App
-      run: npm run build-windows  # Adjust this command to match your build script
-      working-directory: ./windows
+      - name: Install dependencies
+        run: npm install
+        working-directory: ./windows # Run npm install in the windows folder
 
-    - name: Zip the build output
-      run: zip -r app.zip path/to/exe-folder  # Replace with the path to the generated .exe file
-      working-directory: ./windows
+      - name: Build Electron App
+        run: npm run build-windows # Adjust this command to match your build script
+        working-directory: ./windows
 
-    - name: Upload .exe to Vercel Blob Storage
-      env:
-        VERCEL_ACCESS_TOKEN: 'd1KwMGvFkdIhDeDuWgr72I1x'  # Securely reference the token
-        VERCEL_BLOB_STORAGE_ID: 'store_UdTn2J4Itnr2FeH4'  # Replace with your actual Blob Storage ID
-      run: |
-        # Install vercel/blob package if required
-        npm install @vercel/blob
-        
-        # Use vercel/blob to upload the zipped file to Blob Storage
-        npx vercel/blob put app.zip --token=$VERCEL_ACCESS_TOKEN --store-id=$VERCEL_BLOB_STORAGE_ID
-      working-directory: ./windows
+      - name: Zip the build output
+        run: zip -r app.zip path/to/exe-folder # Replace with the path to the generated .exe file
+        working-directory: ./windows
+
+      - name: Upload .exe to Vercel Blob Storage
+        env:
+          VERCEL_ACCESS_TOKEN: "d1KwMGvFkdIhDeDuWgr72I1x" # Securely reference the token
+          VERCEL_BLOB_STORAGE_ID: "store_UdTn2J4Itnr2FeH4" # Replace with your actual Blob Storage ID
+        run: |
+          # Install vercel/blob package if required
+          npm install @vercel/blob
+
+          # Use vercel/blob to upload the zipped file to Blob Storage
+          npx vercel/blob put app.zip --token=$VERCEL_ACCESS_TOKEN --store-id=$VERCEL_BLOB_STORAGE_ID
+        working-directory: ./windows
