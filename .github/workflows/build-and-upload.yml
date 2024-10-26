@@ -21,12 +21,8 @@ jobs:
       with:
         node-version: '16'
 
-    # Log the current directory after checking out code
-    - name: Log Current Directory After Checkout
-      run: pwd
-
-    - name: List Files in Root
-      run: ls -la
+    - name: Install wine
+      run: sudo apt-get install -y wine
 
     - name: Install dependencies
       run: |
@@ -37,18 +33,19 @@ jobs:
     - name: Build Electron App
       run: |
         pwd  # Log directory to confirm location
-        npm run build-windows  # Adjust this command to match your build script
+        npm run build-windows  # Run the Electron build command for Windows
       working-directory: ./windows
 
-    - name: Zip the build output
+    - name: Find and Zip the .exe File
       run: |
-        pwd  # Log directory for confirmation
-        zip -r app.zip path/to/exe-folder  # Replace with the path to the generated .exe file
+        # Locate the .exe file in the dist folder and zip it
+        exe_file=$(find dist -name "*.exe")
+        zip -j app.zip "$exe_file"  # The -j option removes folder paths in the zip
       working-directory: ./windows
 
     - name: Upload .exe to Vercel Blob Storage
       env:
-        VERCEL_ACCESS_TOKEN: 'd1KwMGvFkdIhDeDuWgr72I1x'  # Use the Vercel access token from GitHub Secrets
+        VERCEL_ACCESS_TOKEN: 'd1KwMGvFkdIhDeDuWgr72I1x' # Use the Vercel access token from GitHub Secrets
         VERCEL_BLOB_STORAGE_ID: 'store_UdTn2J4Itnr2FeH4'  # Replace with your actual Blob Storage ID
       run: |
         # Install vercel/blob package if needed
