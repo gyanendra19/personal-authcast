@@ -17,6 +17,13 @@ jobs:
       uses: actions/setup-node@v2
       with:
         node-version: '16'
+    
+    # Log current directory after checkout
+    - name: Log Current Directory After Checkout
+      run: pwd
+
+    - name: List Files in Root
+      run: ls -la
 
     - name: Install dependencies
       run: npm install
