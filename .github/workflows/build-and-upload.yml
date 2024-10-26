@@ -21,8 +21,14 @@ jobs:
       with:
         node-version: '16'
 
-    - name: Install wine
-      run: sudo apt-get install -y wine
+    - name: Enable multiarch and install wine32
+      run: |
+        sudo dpkg --add-architecture i386
+        sudo apt-get update
+        sudo apt-get install -y wine32 wine64 xvfb  # Install wine32 and xvfb for GUI handling
+
+    - name: Start virtual framebuffer
+      run: Xvfb :1 & export DISPLAY=:1  # Start X virtual framebuffer
 
     - name: Install dependencies
       run: |
@@ -45,7 +51,7 @@ jobs:
 
     - name: Upload .exe to Vercel Blob Storage
       env:
-        VERCEL_ACCESS_TOKEN: 'd1KwMGvFkdIhDeDuWgr72I1x' # Use the Vercel access token from GitHub Secrets
+        VERCEL_ACCESS_TOKEN: 'd1KwMGvFkdIhDeDuWgr72I1x'  # Use the Vercel access token from GitHub Secrets
         VERCEL_BLOB_STORAGE_ID: 'store_UdTn2J4Itnr2FeH4'  # Replace with your actual Blob Storage ID
       run: |
         # Install vercel/blob package if needed
