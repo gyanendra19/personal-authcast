@@ -5,8 +5,8 @@ on:
     branches:
       - main
     paths:
-      - "windows/**" 
-      - ".github/workflows/**" 
+      - "windows/**"
+      - ".github/workflows/**"
 
 jobs:
   build:
@@ -55,6 +55,10 @@ jobs:
           fi
         working-directory: ./windows
 
+      - name: Zip the .exe File
+        run: |
+          zip -j dist/AuthCast.zip "${{ steps.locate-exe.outputs.exe_path }}" # -j flag to avoid folder structure
+
       - name: Log .exe Path for Debugging
         run: |
           echo "Found .exe file at: ${{ steps.locate-exe.outputs.exe_path }}"
@@ -62,10 +66,10 @@ jobs:
       - name: Upload .exe to Vercel Blob Storage
         env:
           VERCEL_ACCESS_TOKEN: "d1KwMGvFkdIhDeDuWgr72I1x"
-          VERCEL_BLOB_STORAGE_ID: "store_UdTn2J4Itnr2FeH4" 
+          VERCEL_BLOB_STORAGE_ID: "store_UdTn2J4Itnr2FeH4"
         run: |
           curl -X POST "https://api.vercel.com/v1/storage/${{ secrets.VERCEL_PROJECT_ID }}/files" \
           -H "Authorization: Bearer ${{ secrets.VERCEL_ACCESS_TOKEN }}" \
-          -H "Content-Type: application/octet-stream" \
-          -F "file=@${{ steps.locate-exe.outputs.exe_path }}"
+          -H "Content-Type: application/zip" \
+          -F "file=@dist/AuthCast.zip"
         working-directory: ./windows
