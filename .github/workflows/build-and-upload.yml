@@ -3,68 +3,66 @@ name: Build and Upload Electron App
 on:
   push:
     branches:
-      - main  # Run workflow on pushes to the main branch
+      - main # Run workflow on pushes to the main branch
     paths:
-      - 'windows/**'  # Only trigger if there are changes in the windows folder
-      - '.github/workflows/**'  # Trigger if the workflow file itself changes
+      - "windows/**" # Only trigger if there are changes in the windows folder
+      - ".github/workflows/**" # Trigger if the workflow file itself changes
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: '16'
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "16"
 
-    - name: Enable multiarch and install wine32
-      run: |
-        sudo dpkg --add-architecture i386
-        sudo apt-get update
-        sudo apt-get install -y wine32 wine64 xvfb  # Install wine32 and xvfb for GUI handling
+      - name: Enable multiarch and install wine32
+        run: |
+          sudo dpkg --add-architecture i386
+          sudo apt-get update
+          sudo apt-get install -y wine32 wine64 xvfb  # Install wine32 and xvfb for GUI handling
 
-    - name: Start virtual framebuffer
-      run: Xvfb :1 & export DISPLAY=:1  # Start X virtual framebuffer
+      - name: Start virtual framebuffer
+        run: Xvfb :1 & export DISPLAY=:1 # Start X virtual framebuffer
 
-    - name: Install dependencies
-      run: |
-        pwd  # Log directory to confirm we're in the correct location
-        npm install
-      working-directory: ./windows  # Set working directory to windows folder
+      - name: Install dependencies
+        run: |
+          pwd  # Log directory to confirm we're in the correct location
+          npm install
+        working-directory: ./windows # Set working directory to windows folder
 
-    - name: Build Electron App
-      run: |
-        pwd  # Log directory to confirm location
-        npm run build-windows  # Run the Electron build command for Windows
-      working-directory: ./windows
+      - name: Build Electron App
+        run: |
+          pwd  # Log directory to confirm location
+          npm run build-windows  # Run the Electron build command for Windows
+        working-directory: ./windows
 
-    - name: Find and Zip .exe Files in Dist Root
-      run: |
-        pwd
-        ls -a
-        cd dist
-        # Locate .exe files at the root of the dist folder and zip them
-        exe_files=$(find dist -maxdepth 1 -name "*.exe")
-        if [ -n "$exe_files" ]; then
-          zip -j app.zip $exe_files  # The -j option removes folder paths in the zip
-        else
-          echo "No .exe files found at the root of dist directory."
-          exit 1
-        fi
-      working-directory: ./windows
+      - name: Locate .exe File
+        id: locate-exe
+        run: |
+          # Find .exe file in the dist folder and save the path to an environment variable
+          exe_file=$(find dist -maxdepth 1 -name "*.exe" | head -n 1)
+          if [ -n "$exe_file" ]; then
+            echo "::set-output name=exe_path::$exe_file"
+          else
+            echo "No .exe files found at the root of dist directory."
+            exit 1
+          fi
+        working-directory: ./windows
 
-    - name: Upload .exe to Vercel Blob Storage
-      env:
-        VERCEL_ACCESS_TOKEN: 'd1KwMGvFkdIhDeDuWgr72I1x'  # Use the Vercel access token from GitHub Secrets
-        VERCEL_BLOB_STORAGE_ID: 'store_UdTn2J4Itnr2FeH4'  # Replace with your actual Blob Storage ID
-      run: |
-        # Install vercel/blob package if needed
-        npm install @vercel/blob
+      - name: Upload .exe to Vercel Blob Storage
+        env:
+          VERCEL_ACCESS_TOKEN: 'd1KwMGvFkdIhDeDuWgr72I1x' # Use the Vercel access token from GitHub Secrets
+          VERCEL_BLOB_STORAGE_ID: "store_UdTn2J4Itnr2FeH4" # Replace with your actual Blob Storage ID
+        run: |
+          # Install vercel/blob package if needed
+          npm install @vercel/blob
 
-        # Use vercel/blob to upload the zipped file to Blob Storage
-        npx vercel/blob put app.zip --token=$VERCEL_ACCESS_TOKEN --store-id=$VERCEL_BLOB_STORAGE_ID
-      working-directory: ./windows
+          # Use vercel/blob to upload the .exe file to Blob Storage
+          npx vercel/blob put "${{ steps.locate-exe.outputs.exe_path }}" --token=$VERCEL_ACCESS_TOKEN --store-id=$VERCEL_BLOB_STORAGE_ID
+        working-directory: ./windows
