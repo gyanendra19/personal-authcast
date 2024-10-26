@@ -46,7 +46,7 @@ jobs:
         id: locate-exe
         run: |
           # Find .exe file in the dist folder and save the path to an environment variable
-          exe_file=$(find dist -maxdepth 1 -name "*.exe" | head -n 1)
+          exe_file=$(find ./dist -maxdepth 1 -name "*.exe" | head -n 1)
           if [ -n "$exe_file" ]; then
             echo "::set-output name=exe_path::$exe_file"
           else
@@ -55,14 +55,16 @@ jobs:
           fi
         working-directory: ./windows
 
+      - name: Log .exe Path for Debugging
+        run: |
+          echo "Found .exe file at: ${{ steps.locate-exe.outputs.exe_path }}"
+
       - name: Upload .exe to Vercel Blob Storage
         env:
-          VERCEL_ACCESS_TOKEN: 'd1KwMGvFkdIhDeDuWgr72I1x' # Use the Vercel access token from GitHub Secrets
+          VERCEL_ACCESS_TOKEN: "d1KwMGvFkdIhDeDuWgr72I1x" # Use the Vercel access token from GitHub Secrets
           VERCEL_BLOB_STORAGE_ID: "store_UdTn2J4Itnr2FeH4" # Replace with your actual Blob Storage ID
         run: |
-          # Install vercel/blob package if needed
-          npm install @vercel/blob
-
-          # Use vercel/blob to upload the .exe file to Blob Storage
-          npx vercel/blob put "${{ steps.locate-exe.outputs.exe_path }}" --token=$VERCEL_ACCESS_TOKEN --store-id=$VERCEL_BLOB_STORAGE_ID
+          curl -X POST "https://api.vercel.com/v1/storage/${{ secrets.VERCEL_PROJECT_ID }}/files" \
+          -H "Authorization: Bearer ${{ secrets.VERCEL_ACCESS_TOKEN }}" \
+          -F "file=@${{ steps.locate-exe.outputs.exe_path }}"
         working-directory: ./windows
