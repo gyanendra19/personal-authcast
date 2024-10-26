@@ -1,0 +1,39 @@
+name: Build and Upload Electron App
+
+on:
+  push:
+    paths:
+      - 'windows/**'  # Only trigger if there are changes in the windows folder
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Build Electron App
+      run: npm run build-windows  # Adjust this command to match your build script
+
+    - name: Zip the build output
+      run: zip -r app.zip path/to/exe-folder  # Replace `path/to/exe-folder` with the path to the generated .exe file
+
+    - name: Upload .exe to Vercel Blob Storage
+      env:
+        VERCEL_ACCESS_TOKEN: 'd1KwMGvFkdIhDeDuWgr72I1x'  # Replace with your actual Vercel Access Token
+        VERCEL_BLOB_STORAGE_ID: 'store_UdTn2J4Itnr2FeH4'  # Replace with your actual Blob Storage ID
+      run: |
+        # Install vercel/blob package if required
+        npm install @vercel/blob
+        
+        # Use vercel/blob to upload the zipped file to Blob Storage
+        npx vercel/blob put app.zip --token=$VERCEL_ACCESS_TOKEN --store-id=$VERCEL_BLOB_STORAGE_ID
