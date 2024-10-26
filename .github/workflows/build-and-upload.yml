@@ -2,49 +2,58 @@ name: Build and Upload Electron App
 
 on:
   push:
+    branches:
+      - main  # Run workflow on pushes to the main branch
     paths:
-      - "windows/**" # Only trigger if there are changes in the windows folder
+      - 'windows/**'  # Only trigger if there are changes in the windows folder
+      - '.github/workflows/**'  # Trigger if the workflow file itself changes
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      # Log current directory after checkout
-      - name: Log Current Directory After Checkout
-        run: pwd
+    - name: Checkout repository
+      uses: actions/checkout@v2
 
-      - name: List Files in Root
-        run: ls -la
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16'
 
-      - name: Checkout repository
-        uses: actions/checkout@v2
+    # Log the current directory after checking out code
+    - name: Log Current Directory After Checkout
+      run: pwd
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: "16"
+    - name: List Files in Root
+      run: ls -la
 
-      - name: Install dependencies
-        run: npm install
-        working-directory: ./windows # Run npm install in the windows folder
+    - name: Install dependencies
+      run: |
+        pwd  # Log directory to confirm we're in the correct location
+        npm install
+      working-directory: ./windows  # Set working directory to windows folder
 
-      - name: Build Electron App
-        run: npm run build-windows # Adjust this command to match your build script
-        working-directory: ./windows
+    - name: Build Electron App
+      run: |
+        pwd  # Log directory to confirm location
+        npm run build-windows  # Adjust this command to match your build script
+      working-directory: ./windows
 
-      - name: Zip the build output
-        run: zip -r app.zip path/to/exe-folder # Replace with the path to the generated .exe file
-        working-directory: ./windows
+    - name: Zip the build output
+      run: |
+        pwd  # Log directory for confirmation
+        zip -r app.zip path/to/exe-folder  # Replace with the path to the generated .exe file
+      working-directory: ./windows
 
-      - name: Upload .exe to Vercel Blob Storage
-        env:
-          VERCEL_ACCESS_TOKEN: "d1KwMGvFkdIhDeDuWgr72I1x" # Securely reference the token
-          VERCEL_BLOB_STORAGE_ID: "store_UdTn2J4Itnr2FeH4" # Replace with your actual Blob Storage ID
-        run: |
-          # Install vercel/blob package if required
-          npm install @vercel/blob
+    - name: Upload .exe to Vercel Blob Storage
+      env:
+        VERCEL_ACCESS_TOKEN: 'd1KwMGvFkdIhDeDuWgr72I1x'  # Use the Vercel access token from GitHub Secrets
+        VERCEL_BLOB_STORAGE_ID: 'store_UdTn2J4Itnr2FeH4'  # Replace with your actual Blob Storage ID
+      run: |
+        # Install vercel/blob package if needed
+        npm install @vercel/blob
 
-          # Use vercel/blob to upload the zipped file to Blob Storage
-          npx vercel/blob put app.zip --token=$VERCEL_ACCESS_TOKEN --store-id=$VERCEL_BLOB_STORAGE_ID
-        working-directory: ./windows
+        # Use vercel/blob to upload the zipped file to Blob Storage
+        npx vercel/blob put app.zip --token=$VERCEL_ACCESS_TOKEN --store-id=$VERCEL_BLOB_STORAGE_ID
+      working-directory: ./windows
