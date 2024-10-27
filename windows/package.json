@@ -1,0 +1,72 @@
+{
+  "name": "authcast",
+  "version": "1.0.0",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder",
+    "build-windows": "electron-builder --win"
+  },
+  "build": {
+    "appId": "authcast",
+    "productName": "Auth Cast",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "app/**/*",
+      "main.js",
+      "package.json"
+    ],
+    "mac": {
+      "target": "dmg"
+    },
+    "win": {
+      "target": "nsis"
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "perMachine": false
+    },
+    "dmg": {
+      "window": {
+        "width": 600,
+        "height": 400
+      },
+      "contents": [
+        {
+          "x": 130,
+          "y": 220
+        },
+        {
+          "x": 410,
+          "y": 220,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    },
+    "appImage": {
+      "artifactName": "${name}-${version}.AppImage"
+    },
+    "deb": {
+      "artifactName": "${name}-${version}.deb"
+    }
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "electron": "^33.0.2",
+    "electron-builder": "^25.1.8",
+    "ps-list": "^8.1.1"
+  }
+}
