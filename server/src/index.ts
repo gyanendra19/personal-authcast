@@ -29,6 +29,16 @@ app.get("/generatemeetcode", (req: Request, res: Response) => {
    res.send({code: code})
 });
 
+app.post('/insertusersindb', async (req: Request, res: Response) => {
+  try{
+    const {name, email} = req.body
+    await database.insertUsers(name, email)
+    res.status(200).json({message: 'success'})
+  }catch(error){
+    console.error(`Error in inserting users into db: ${error}`)
+  }
+})
+
 app.listen(port, () => {
   console.log(`[server]: Server is running at http://localhost:${port}`);
 });

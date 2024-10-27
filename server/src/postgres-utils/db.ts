@@ -77,6 +77,15 @@ class Database {
       return 'Interview ID successfully inserted';
     }
   }
+
+  async insertUsers(name: string, email: string){
+    const insertQuery = `
+    INSERT INTO users (company_domain, email, name, created_ts)
+    VALUES ($1, $2, $3, $4)
+    `;
+    await this.runQuery(insertQuery, ['company_domain', email, name, Date.now()], 'insertUsers')
+    return 'Inserted Users Successfully'
+  }
 }
 
 export default Database
