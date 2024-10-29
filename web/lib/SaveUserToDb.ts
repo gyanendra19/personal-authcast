@@ -14,21 +14,22 @@ interface UserDetails {
 // Function to save user details to the database
 export const saveUserToDatabase = async (user: UserDetails) => {
   const { id, email, name } = user;
-
+  console.log('hello', id, email, name)
   const { data, error } = await supabase.from("users").upsert(
     [
-      // Use upsert to insert or update if the email already exists
       {
         id,
         name,
         email,
         created_at: new Date().toISOString(),
-        domain: "",
+        domain: email.split('@')[1],
       },
     ],
     { onConflict: "email" } // Ensure we update if the email exists
   );
 
+    console.log('saved data to db');
+    
   if (error) {
     console.error("Error saving user to the database:", error.message);
     return false;

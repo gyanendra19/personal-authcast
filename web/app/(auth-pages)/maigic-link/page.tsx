@@ -33,6 +33,8 @@ const MagicLinkSignUp = () => {
     });
   };
 
+  console.log(name);
+
   useEffect(() => {
     // Check if there's already a user logged in
     const fetchUserSession = async () => {
@@ -40,6 +42,13 @@ const MagicLinkSignUp = () => {
       if (data.session) {
         const currentUser = data.session.user;
         setUser(currentUser as User);
+
+        // Save user details to the database
+        saveUserToDatabase({
+          id: currentUser?.id,
+          email: currentUser?.email!,
+          name,
+        });
       }
 
       // Listen for auth state changes
@@ -48,13 +57,14 @@ const MagicLinkSignUp = () => {
           if (event === "SIGNED_IN" && session) {
             const signedInUser = session.user;
             setUser(signedInUser as User);
-            console.log(signedInUser, "data");
+            console.log(event, signedInUser, "data");
+            console.log(name);
 
             // Save user details to the database
             saveUserToDatabase({
               id: signedInUser?.id,
               email: signedInUser?.email!,
-              name: signedInUser.user_metadata?.full_name,
+              name,
             });
           } else if (event === "SIGNED_OUT") {
             setUser(null);
@@ -72,33 +82,35 @@ const MagicLinkSignUp = () => {
   }, []);
 
   return (
-    <form onSubmit={handleSignUp} className="space-y-4">
-      <input
-        type="name"
-        name="name"
-        value={name || ''}
-        onChange={(e) => setName(e.target.value)}
-        placeholder="Adam Joseph"
-        className="w-full px-4 py-2 bg-transparent border border-gray-500/25 text-white rounded-md focus:outline-none focus:ring focus:ring-blue-500"
-        required
-      />
-      <input
-        type="email"
-        name="email"
-        value={email || ''}
-        onChange={(e) => setEmail(e.target.value)}
-        placeholder="m@example.com"
-        className="w-full px-4 py-2 bg-transparent border border-gray-500/25 text-white rounded-md focus:outline-none focus:ring focus:ring-blue-500"
-        required
-      />
-      <button
-        type="submit"
-        className="w-full py-2 bg-white text-black rounded-md"
-      >
-        Create account
-      </button>
-      {message && <p>{message}</p>}
-    </form>
+    <>
+      <form onSubmit={handleSignUp} className="space-y-4">
+        <input
+          type="name"
+          name="name"
+          value={name || ""}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="Adam Joseph"
+          className="w-full px-4 py-2 bg-transparent border border-gray-500/25 text-white rounded-md focus:outline-none focus:ring focus:ring-blue-500"
+          required
+        />
+        <input
+          type="email"
+          name="email"
+          value={email || ""}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="m@example.com"
+          className="w-full px-4 py-2 bg-transparent border border-gray-500/25 text-white rounded-md focus:outline-none focus:ring focus:ring-blue-500"
+          required
+        />
+        <button
+          type="submit"
+          className="w-full py-2 bg-white text-black rounded-md"
+        >
+          Create account
+        </button>
+        {message && <p>{message}</p>}
+      </form>
+    </>
   );
 };
 

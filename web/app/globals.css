@@ -67,3 +67,15 @@
     @apply bg-background text-foreground;
   }
 }
+
+.shadow-effect::after{
+  content: '';
+  background: linear-gradient(180deg, rgba(246, 248, 250, 0.01) 0%, rgba(40, 40, 41, 0.8) 95%);
+  height: 30%;
+  width: 100%;
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  z-index: 100;
+  backdrop-filter: 20px;
+}

@@ -80,8 +80,8 @@ const MicrosoftAuth = () => {
   }, []);
 
   return (
-    <button onClick={handleMicrosoftSignIn} className="flex items-center px-8 py-1 space-x-2 border border-gray-400/35 text-white rounded-md">
-    <Image width={22} height={22} alt="" src='/microsoft.png' />
+    <button onClick={handleMicrosoftSignIn} className="flex items-center px-20 py-1 space-x-2 border border-gray-400/35 text-white rounded-md">
+    <Image width={28} height={28} alt="" src='/microsoft.png' />
     <span className="text-sm">Microsoft</span>
   </button>
   );

@@ -72,6 +72,12 @@ const config = {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },
+      screens: {
+        'sm': '500px', // Overrides the default 'md' size
+        'md': '780px',
+        'lg': '1024px', // Overrides the default 'lg' size
+        'max-780': { 'max': '780px' },
+      },
     },
   },
   plugins: [require("tailwindcss-animate")],
